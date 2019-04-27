@@ -12,3 +12,25 @@ console.log(global.num); undefined
 
 在函数中的this
 
+function fn(){
+  this.num = 10;
+}
+fn();
+console.log(this); {}
+console.log(this.num); undefined
+console.log(global.num); 10
+
+//在函数中this指向的是global对象，和全局中的this不是同一个对象，简单来说，你在函数中通过this定义的变量就是相当于给global添加了一个属性，
+//此时与全局中的this已经没有关系了。
+
+//如果不相信，看下面这段代码可以证明。
+function fn(){
+  function fn2(){
+    this.age = 18;
+  }
+  fn2();
+  console.log(this); global
+  console.log(this.age); 18
+  console.log(global.age); 18
+}
+fn();
