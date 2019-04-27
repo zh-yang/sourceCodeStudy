@@ -38,3 +38,22 @@ fn();
 //对吧，在函数中this指向的是global。
 
 //构造函数中的this
+
+function Fn(){
+  this.num = 998;
+}
+var fn = new Fn();
+console.log(fn.num); 998
+console.log(global.num); undefined
+
+//在构造函数中this指向的是它的实例，而不是global。
+
+//我们现在可以聊聊关于全局中的this了，说到全局中的this，其实和Nodejs中的作用域有一些关系，
+//如果你想了解Nodejs中关于作用域的信息可以看探讨Nodejs中的作用域问题。这篇文章。
+
+//回到正题，全局中的this指向的是module.exports。
+
+this.num = 10;
+console.log(module.exports); {num:10}
+console.log(module.exports.num);
+
