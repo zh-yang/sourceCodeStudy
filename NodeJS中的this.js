@@ -33,7 +33,7 @@ function fn(){
 }
 fn();
 
-//对吧，在函数中this指向的是global。
+//在函数中this指向的是global。
 
 //构造函数中的this
 
