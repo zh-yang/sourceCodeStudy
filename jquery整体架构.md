@@ -50,4 +50,7 @@ aQuery.prototype = {
     age: function() {},
 }
 ```
+
 通过`new aQuery()`，虽然返回的是一个实例，但是也有明显的问题，死循环了。
+
+
