@@ -17,6 +17,7 @@ $().hide().html('...').show()
 JavaScript是函数式语言，函数可以实现类，类就是面向对象编程中最基本的概念
 
 ```
+
 var aQuery = function(selector, context) {
     //构造函数
 }
@@ -29,6 +30,7 @@ aQuery.prototype = {
 var $ = new aQuery();
 
 $.name
+
 ```
 
 这是构造函数常规的使用方法，jQuery显然与此不同
