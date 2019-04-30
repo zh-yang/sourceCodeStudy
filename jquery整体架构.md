@@ -47,6 +47,7 @@ $().noConflict()
 要实现这样，那么$()应该是返回类的实例，所以把代码改一下：
 
 ```
+
 var aQuery = function(selector, context) {
     return new aQuery();
 }
@@ -55,6 +56,7 @@ aQuery.prototype = {
     name: function() {},
     age: function() {},
 }
+
 ```
 
 通过`new aQuery()`，虽然返回的是一个实例，但是也有明显的问题，死循环了。
