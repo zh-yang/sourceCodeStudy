@@ -1,6 +1,6 @@
 >jQuery框架的核心就是从HTML文档中匹配元素并对其执行操作
 
-```
+```js
 
 //例如
 $().find().css()
@@ -16,7 +16,7 @@ $().hide().html('...').show()
 
 JavaScript是函数式语言，函数可以实现类，类就是面向对象编程中最基本的概念
 
-```
+```js
 
 var aQuery = function(selector, context) {
     //构造函数
@@ -37,7 +37,7 @@ $.name
 
 jQuery没有使用new运算符显示的实例化，而是直接调用其函数
 
-```
+```js
 
 $().ready()
 $().noConflict()
@@ -46,7 +46,7 @@ $().noConflict()
 
 要实现这样，那么$()应该是返回类的实例，所以把代码改一下：
 
-```
+```js
 
 var aQuery = function(selector, context) {
     return new aQuery();
@@ -63,7 +63,7 @@ aQuery.prototype = {
 
 如何返回一个正确的实例，可以把jQuery类当作一个工厂方法来创建实例，把这个方法放到jQuery.prototype
 返回的是aQuery.prototype
-```
+```js
 var aQuery = function(selector, context) {
     return aQuery.prototype.init();
 }
@@ -81,7 +81,7 @@ aQuery.prototype = {
 所以要设计独立的作用域才行
 
 jQuery框架分隔作用域的处理
-```
+```js
 jQuery = function (selector, context) {
 
     // The jQuery object is actually just the init constructor 'enhanced'
