@@ -80,5 +80,34 @@ aQuery.prototype = {
 这样的话也会有问题，每次设置实例的this都会覆盖aQuery.prototype，每个实例都没有独立的属性
 所以要设计独立的作用域才行
 
-```文同
+jQuery框架分隔作用域的处理
 ```
+jQuery = function (selector, context) {
+
+    // The jQuery object is actually just the init constructor 'enhanced'
+    // Need init if jQuery is called (just allow error to be thrown if not included)
+    return new jQuery.fn.init(selector, context);
+}
+```
+很明显通过实例init函数，每次都构建新的init实例对象，来分隔this,避免交互混淆
+但是实例和jQuery的原型分离了，会出现新的问题
+
+例如：
+
+```js
+var aQuery = function(selector, context) {
+       return  new aQuery.prototype.init();
+}
+aQuery.prototype = {
+    init: function() {
+        this.age = 18
+        return this;
+    },
+    name: function() {},
+    age: 20
+}
+
+//Uncaught TypeError: Object [object Object] has no method 'name' 
+console.log(aQuery().name())
+```
+
