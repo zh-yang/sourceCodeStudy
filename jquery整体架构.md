@@ -137,4 +137,4 @@ aQuery.prototype.init.prototype = aQuery.prototype;
 console.log(aQuery().name()) //20
 ```
 fn没有什么特殊的意思，只是jQuery.prototype的引用
-[jQuery结构](http://dl.iteye.com/upload/attachment/0073/2601/3fc8106d-6afd-314c-a6bf-a64157145e67.jpg)
+![jQuery结构](http://dl.iteye.com/upload/attachment/0073/2601/3fc8106d-6afd-314c-a6bf-a64157145e67.jpg)
