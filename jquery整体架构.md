@@ -61,4 +61,24 @@ aQuery.prototype = {
 
 通过`new aQuery()`，虽然返回的是一个实例，但是也有明显的问题，死循环了。
 
+如何返回一个正确的实例，可以把jQuery类当作一个工厂方法来创建实例，把这个方法放到jQuery.prototype
+返回的是aQuery.prototype
+```
+var aQuery = function(selector, context) {
+    return aQuery.prototype.init();
+}
+aQuery.prototype = {
+    //原型
+    init: function() {
+        return this;
+    },
+    name: function() {},
+    age: function() {},
+}
+```
 
+这样的话也会有问题，每次设置实例的this都会覆盖aQuery.prototype，每个实例都没有独立的属性
+所以要设计独立的作用域才行
+
+```文同
+```
