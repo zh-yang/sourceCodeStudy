@@ -110,4 +110,31 @@ aQuery.prototype = {
 //Uncaught TypeError: Object [object Object] has no method 'name' 
 console.log(aQuery().name())
 ```
+怎么访问jQuery类原型上的属性和方法？做到既能隔离作用域还能使用jQuery的原型的作用域呢，能在返回实例中访问jQuery的原型对象。
+实现关键点:
+```js
+// Give the init function the jQuery prototype for later instantiation
+jQuery.fn.init.prototype = jQuery.fn;
+```
+通过原型传递解决问题，把jQuery原型传递给jQuery.prototype.init.prototype
+换句话说jQuery的原型对象覆盖了init构造器的原型对象
+```js
+var aQuery = function(selector, context) {
+       return  new aQuery.prototype.init();
+}
+aQuery.prototype = {
+    init: function() {
+        return this;
+    },
+    name: function() {
+        return this.age
+    },
+    age: 20
+}
 
+aQuery.prototype.init.prototype = aQuery.prototype;
+
+console.log(aQuery().name()) //20
+```
+fn没有什么特殊的意思，只是jQuery.prototype的引用
+(jQuery结构)[http://dl.iteye.com/upload/attachment/0073/2601/3fc8106d-6afd-314c-a6bf-a64157145e67.jpg]
