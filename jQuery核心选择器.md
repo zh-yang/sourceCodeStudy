@@ -113,3 +113,8 @@ console.log(match)
 //第二元素：undefined
 //第三元素：返回ID
 ```
+
+#### 查看jQuery处理string的源码
+```js
+
+```
