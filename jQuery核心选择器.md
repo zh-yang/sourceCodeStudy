@@ -23,4 +23,31 @@
             // Method init() accepts an alternate rootjQuery
             // so migrate can support jQuery.sub (gh-2101)
             root = root || rootjQuery;
+            
+            //Handle html strings
+            if (typeof selector === "string") {
+                //这里来处理各种选择器，新建dom等
+                //主要用来上边定义的正则rquickExpr
+                ...
+            } else if (selector.nodeType) {
+                this[0] = selector;
+                this.length = 1;
+                return this;
+
+                // HANDLE: $(function)
+                // Shortcut for document ready
+            } else if (isFunction(selector)) {
+                return root.ready !== undefined ?
+                    root.ready(selector) :
+
+                    // Execute immediately if ready is not present
+                    selector(jQuery);
+            }
+
+            return jQuery.makeArray(selector, this);
+        };
+
 ```
+
+可以看出jQuery在实例化时对参数selector进行了五种分类处理
+* 1.传入参数布尔转换为false时直接`return this`，返回空对象实例，拥有jQuery原型的所有方法。
