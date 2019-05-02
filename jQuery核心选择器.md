@@ -84,3 +84,32 @@
 * 2./^(#([\w-]*))$/
 
 匹配结尾带上#号的任意字符，包括下划线与-
+
+#### 所以综合起来呢大概的意思就是：匹配HTML标记和ID表达式（<前面可以匹配任何空白字符，包括空格、制表符、换页符等等）
+
+测试：
+```js
+var str = ' <div id=top></div>';
+var match = rquickExpr.exec(str);
+console.log(match)
+//[" <div id=top></div>", "<div id=top></div>", undefined, index: 0, input: " <div id=top></div>"]
+
+var str = '#test';
+var match = rquickExpr.exec(str);
+console.log(match)
+//["#test", undefined, "test", index: 0, input: "#test"]
+
+//由于使用了正则分组，所以返回数组为匹配到的字符串分组：
+//注意：第一分组已经被忽略，其实他和match返回的第一元素值相同
+
+//当匹配dom元素时
+//第一元素：匹配到的整个string，包括空字符
+//第二元素：匹配到的dom结构，去除了<之前的空字符以及>之后的所有字符
+//第三元素：undefined，由于第三元素用来匹配ID，所以这里为undefined
+
+
+//当匹配id时：
+//第一元素：匹配到的整个string，包括#
+//第二元素：undefined
+//第三元素：返回ID
+```
