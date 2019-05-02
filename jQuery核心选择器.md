@@ -46,8 +46,17 @@
 
             return jQuery.makeArray(selector, this);
         };
+    // Give the init function the jQuery prototype for later instantiation
+    init.prototype = jQuery.fn;
+
+    // Initialize central reference
+    rootjQuery = jQuery(document);
 
 ```
 
 可以看出jQuery在实例化时对参数selector进行了五种分类处理
 * 1.传入参数布尔转换为false时直接`return this`，返回空对象实例，拥有jQuery原型的所有方法。
+* 2.当参数为string类型时，这种情况最为复杂，也是我们最常用的方法，进行各种dom操作。
+* 3.拥有nodeType属性的原生DOM，被包装成jQuery元素返回。
+* 4.参数为函数是，一般的浏览器会调用root.ready(selector)
+* 5.其他情况，参数为数组，对象，jQuery原属等，由jQuery.makeArray()处理
