@@ -306,3 +306,24 @@ jQuery.parseHTML = function (data, context, keepScripts) {
     return jQuery.merge([], parsed.childNodes);
 };
 ```
+
+* jQuery.merge
+
+```js
+// Support: Android <=4.0 only, PhantomJS 1 only
+// push.apply(_, arraylike) throws on ancient WebKit
+merge: function (first, second) {
+    var len = +second.length,
+        j = 0,
+        i = first.length;
+
+    for (; j < len; j++) {
+        first[i++] = second[j];
+    }
+
+    first.length = i;
+
+    return first;
+}
+```
+
