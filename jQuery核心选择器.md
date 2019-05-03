@@ -116,5 +116,44 @@ console.log(match)
 
 #### 查看jQuery处理string的源码
 ```js
+// Handle HTML strings
+if (typeof selector === "string") {
+    if (selector[0] === "<" &&
+        selector[selector.length - 1] === ">" &&
+        selector.length >= 3) {
 
+        // Assume that strings that start and end with <> are HTML and skip the regex check
+        match = [null, selector, null];
+
+    } else {
+        match = rquickExpr.exec(selector);
+    }
+
+    // Match html or make sure no context is specified for #id
+    if (match && (match[1] || !context)) {
+
+        // HANDLE: $(html) -> $(array)
+        if (match[1]) {
+            //处理html
+            ...
+        } else {
+            elem = document.getElementById(match[2]);
+
+            if (elem) {
+
+                // Inject the element directly into the jQuery object
+                this[0] = elem;
+                this.length = 1;
+            }
+            return this;
+        }
+        // HANDLE: $(expr, $(...))
+        } else if (!context || context.jquery) {
+            return (context || root).find(selector);
+
+            // HANDLE: $(expr, context)
+            // (which is just equivalent to: $(context).find(expr)
+        } else {
+            return this.constructor(context).find(selector);
+        }
 ```
