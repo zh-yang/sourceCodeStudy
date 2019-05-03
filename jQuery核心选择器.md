@@ -147,13 +147,162 @@ if (typeof selector === "string") {
             }
             return this;
         }
-        // HANDLE: $(expr, $(...))
-        } else if (!context || context.jquery) {
-            return (context || root).find(selector);
+    // HANDLE: $(expr, $(...))
+    } else if (!context || context.jquery) {
+        return (context || root).find(selector);
 
-            // HANDLE: $(expr, context)
-            // (which is just equivalent to: $(context).find(expr)
-        } else {
-            return this.constructor(context).find(selector);
+        // HANDLE: $(expr, context)
+        // (which is just equivalent to: $(context).find(expr)
+    } else {
+        return this.constructor(context).find(selector);
+    }
+}
+```
+场景分析：
+```js
+//jQuery入口选择器API为$(selector, context)
+//其中selector可匹配三种情况，1.html字符串2.类选择器3.ID选择器
+//context为附加的上下文，只有当selector匹配选择器时起作用。
+```
+
+#### 匹配模式一：$("#id")
+
+1.进入字符串处理
+```js
+if ( typeof selector === "string" ) {
+```
+
+2.如果是以`<`开头，以`>`结尾且长度大于3的情况，直接跳过正则验证，直接`match = [null,selector,null]`
+
+3.否则的话需要`match = rquickExpr.exec( selector )`
+
+4.匹配的html或确保没有上下文指定为# id
+```js
+if ( match && (match[1] || !context) ) {
+```
+
+5.match[1]存在，处理(html)−>(array),,也就是处理的是html方式
+
+6.处理ID
+```js
+elem = document.getElementById(match[2]);
+
+if (elem) {
+
+    // Inject the element directly into the jQuery object
+    this[0] = elem;
+    this.length = 1;
+}
+
+    //this.context = document;
+    //this.selector = selector;
+    //jQuery3.x已经去除了这两个属性
+
+return this;
+```
+
+#### 匹配模式二：<htmltag>
+
+源码：
+```js
+// HANDLE: $(html) -> $(array)
+if (match[1]) {
+    context = context instanceof jQuery ? context[0] : context;
+
+    // Option to run scripts is true for back-compat
+    // Intentionally let the error be thrown if parseHTML is not present
+    jQuery.merge(this, jQuery.parseHTML(
+        match[1],
+        context && context.nodeType ? context.ownerDocument || context : document,
+        true
+    ));
+
+    // HANDLE: $(html, props)
+    if (rsingleTag.test(match[1]) && jQuery.isPlainObject(context)) {
+        for (match in context) {
+
+            // Properties of context are called as methods if possible
+            if (isFunction(this[match])) {
+                this[match](context[match]);
+
+                // ...and otherwise set as attributes
+            } else {
+                this.attr(match, context[match]);
+            }
         }
+    }
+
+    return this;
+
+    // HANDLE: $(#id)
+}
+```
+1.首先处理context，如果是jQuery元素转换为原生DOM
+
+2.使用jQuery.parseHtml()返回解析的DOM数组，然后使用jQuery.merge()进行合并
+
+* ownerDocument和 documentElement的区别
+
+```js
+context && context.nodeType ? context.ownerDocument || context : document
+//如果context不存在或者context不是DOM，返回document
+//如果是DOM分两种情况：1.是document，直接返回2.是其他DOM，返回context.ownerDocument
+```
+
+* jQuery.parseHTML
+
+```js
+jQuery.parseHTML = function (data, context, keepScripts) {
+    //data非string类型
+    if (typeof data !== "string") {
+        return [];
+    }
+    //context布尔类型
+    if (typeof context === "boolean") {
+        //是否执行脚本
+        keepScripts = context;
+        context = false;
+    }
+
+    var base, parsed, scripts;
+
+    if (!context) {
+        //context不存在
+        // Stop scripts or inline event handlers from being executed immediately
+        // by using document.implementation
+        if (support.createHTMLDocument) {
+            //如果浏览器支持document.implementation.createHTMLDocument
+            //新建一个document，提升安全性
+            context = document.implementation.createHTMLDocument("");
+
+            // Set the base href for the created document
+            // so any parsed elements with URLs
+            // are based on the document's URL (gh-2965)
+            base = context.createElement("base");
+            base.href = document.location.href;
+            context.head.appendChild(base);
+        } else {
+            //否则返回当前documentent
+            context = document;
+        }
+    }
+    //匹配单标签，如<a></a>
+    parsed = rsingleTag.exec(data);
+    //是否执行脚本
+    scripts = !keepScripts && [];
+
+    // Single tag
+    if (parsed) {
+        //单标签直接创建并返回
+        return [context.createElement(parsed[1])];
+    }
+
+    parsed = buildFragment([data], context, scripts);
+
+    if (scripts && scripts.length) {
+        jQuery(scripts).remove();
+    }
+
+    return jQuery.merge([], parsed.childNodes);
+};
 ```
