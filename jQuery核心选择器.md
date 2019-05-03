@@ -327,3 +327,61 @@ merge: function (first, second) {
 }
 ```
 
+3.将生成的DOM和jQuery原型进行合并之后，然后判断DOM字符串是否为单标签类型，若果是，而且context是JSON对象，就对标签属性赋值。
+
+```js
+var rsingleTag = (/^<([a-z][^\/\0>:\x20\t\r\n\f]*)[\x20\t\r\n\f]*\/?>(?:<\/\1>|)$/i);
+//根据此正则判断是否为单标签DOM字符串
+//<div>符合
+//<p></p>符合
+//<a>xxxx</a>不符合
+//<ul><li></li></ul>不符合
+
+//工具函数
+var isFunction = function isFunction(obj) {
+    //剔除DOM元素
+    // Support: Chrome <=57, Firefox <=52
+    // In some browsers, typeof returns "function" for HTML <object> elements
+    // (i.e., `typeof document.createElement( "object" ) === "function"`).
+    // We don't want to classify *any* DOM node as a function.
+    return typeof obj === "function" && typeof obj.nodeType !== "number";
+};
+isPlainObject: function (obj) {
+    var proto, Ctor;
+
+    // Detect obvious negatives
+    // Use toString instead of jQuery.type to catch host objects
+    if (!obj || toString.call(obj) !== "[object Object]") {
+        return false;
+    }
+
+    proto = getProto(obj);
+
+    // Objects with no prototype (e.g., `Object.create( null )`) are plain
+    if (!proto) {
+        return true;
+    }
+
+    // Objects with prototype are plain iff they were constructed by a global Object function
+    Ctor = hasOwn.call(proto, "constructor") && proto.constructor;
+    return typeof Ctor === "function" && fnToString.call(Ctor) === ObjectFunctionString;
+}
+
+// HANDLE: $(html, props)
+if (rsingleTag.test(match[1]) && jQuery.isPlainObject(context)) {
+    for (match in context) {
+
+        // Properties of context are called as methods if possible
+        if (isFunction(this[match])) {
+        //如果是DOM定义过的属性
+            this[match](context[match]);
+            // ...and otherwise set as attributes
+        } else {
+        //自定义属性
+            this.attr(match, context[match]);
+        }
+    }
+}
+```
+
+
