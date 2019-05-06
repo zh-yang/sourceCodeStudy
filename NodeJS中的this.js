@@ -42,7 +42,6 @@ function Fn(){
 var fn = new Fn();
 console.log(fn.num); 998
 console.log(global.num); undefined
-
 //在构造函数中this指向的是它的实例，而不是global。
 
 //关于全局中的this了，说到全局中的this，其实和Nodejs中的作用域有一些关系，
