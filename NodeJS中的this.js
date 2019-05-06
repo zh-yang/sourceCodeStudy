@@ -32,7 +32,6 @@ function fn(){
   console.log(global.age); 18
 }
 fn();
-
 //在函数中this指向的是global。
 
 //构造函数中的this
