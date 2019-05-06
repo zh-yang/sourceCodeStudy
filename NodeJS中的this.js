@@ -9,7 +9,7 @@ console.log(this.num); 10
 console.log(global.num); undefined
 //全局中的this默认是一个空对象。并且在全局中this与global对象没有任何的关系
 
-在函数中的this
+//在函数中的this
 
 function fn(){
   this.num = 10;
