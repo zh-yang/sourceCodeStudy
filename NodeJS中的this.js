@@ -2,7 +2,6 @@
 //以下内容都是关于在nodejs中的this而非javascript中的this，nodejs中的this和在浏览器中javascript中的this是不一样的。
 
 //在全局中的this
-
 console.log(this); {}
 this.num = 10;
 console.log(this.num); 10
